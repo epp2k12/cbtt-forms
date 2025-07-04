@@ -1,0 +1,70 @@
+# WordPress specific ignores
+/wp-content/uploads/
+/wp-content/blogs.dir/
+/wp-content/upgrade/
+/wp-content/backup-db/
+/wp-content/cache/
+/wp-content/ai1wm-backups/ # All-in-One WP Migration backups
+/wp-content/debug.log
+/wp-content/plugins/hello.php
+/wp-content/themes/*/node_modules/ # Ignore node_modules in child themes if they have them
+/wp-content/themes/*/dist/ # Ignore compiled theme assets
+/wp-content/themes/*/build/ # Another common build directory name
+/wp-content/mu-plugins/
+/wp-config.php
+/.htaccess # If you're managing this separately or it's generated
+/wp-cron.php
+/error_log
+/php_error.log
+/debug.log
+/install.php
+/license.txt
+/readme.html
+/xmlrpc.php
+/.well-known/
+
+# Node.js and Vue.js specific ignores
+/node_modules/
+/dist/ # Common output directory for Vue builds
+/build/ # Another common output directory
+/tmp/
+.env
+.env.*.local
+.DS_Store
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock # if you use yarn
+
+# Tailwind CSS specific ignores (mostly covered by Node.js/Vue ignores)
+# If you have specific Tailwind JIT/build caches, they'd go here.
+# Usually, these are within node_modules or your build directory.
+.tailwind-cache/ # If any specific cache files are generated outside node_modules/dist
+
+# macOS specific ignores
+.DS_Store
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# VS Code specific ignores
+.vscode/
+
+# IDE specific ignores
+.idea/ # PhpStorm/WebStorm
+*.iml
+
+# Composer specific ignores
+/vendor/ # If you're using Composer for any WordPress dependencies
+composer.lock
+
+# Log files
+*.log
+
+# Example for a theme using Vue/Tailwind within wp-content/themes/your-theme/
+# If your theme's Vue project is self-contained:
+# /wp-content/themes/your-theme/node_modules/
+# /wp-content/themes/your-theme/dist/
+# /wp-content/themes/your-theme/build/
+# /wp-content/themes/your-theme/npm-debug.log
+# /wp-content/themes/your-theme/.env
