@@ -122,6 +122,11 @@ class Cbtt_Forms {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-cbtt-forms-public.php';
 
+
+		// new classes 
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-tour-form-shortcode.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-cbtt-forms-post-sync.php';
+
 		$this->loader = new Cbtt_Forms_Loader();
 
 	}
@@ -168,12 +173,31 @@ class Cbtt_Forms {
 	 */
 	private function define_public_hooks() {
 
+		// var_dump('test only');
+		// die();
+
+	
+
 		$plugin_public = new Cbtt_Forms_Public( $this->get_plugin_name(), $this->get_version() );
+
+		$this->loader->add_action('phpmailer_init', $plugin_public, 'mailtrap');
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 
+		$plugin_shortcode = new Tour_Form_Shortcode($this->get_plugin_name(), $this->get_version());
+
+		$this->loader->add_action( 'rest_api_init', $plugin_public, 'create_custom_test_endpoint' );
+		$this->loader->add_action( 'rest_api_init', $plugin_public, 'create_custom_store_endpoint' );
+
+		// Initialize post sync
+        new CBTT_Forms_Post_Sync();
+
+		add_shortcode('tour_form', array($plugin_public, 'create_tour_form_shortcode'));
+		
+
 	}
+
 
 	/**
 	 * Run the loader to execute all of the hooks with WordPress.
