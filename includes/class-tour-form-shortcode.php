@@ -27,5 +27,17 @@ class Tour_Form_Shortcode {
         return ob_get_clean();
     }
 
+    public function render_shortcode2($atts) {
+
+        global $post;
+        $post_title = get_the_title();
+
+        ob_start();
+        ?>
+        <div id="vue-contact-form" data-post-title="<?php echo $post_title; ?>"></div>
+        <?php
+        return ob_get_clean();
+    }
+
 }
 
