@@ -12,29 +12,30 @@ class Tour_Form_Shortcode {
         $this->plugin_name = $plugin_name;
         $this->version = $version;
 
-        add_shortcode('cbtt_tour_form', array($this, 'render_shortcode'));
+        add_shortcode('cbtt_tour_form', array($this, 'render_contact_form'));
+        add_shortcode('cbtt_tour_fast_form', array($this, 'render_shortcode_fast_contact_form'));
     }
 
-    public function render_shortcode($atts) {
+    public function render_contact_form($atts) {
 
         global $post;
         $post_title = get_the_title();
 
         ob_start();
         ?>
-        <div id="vue-contact-form" data-post-title="<?php echo $post_title; ?>"></div>
+        <div id="vue-contact-form" data-post-title="<?php echo $post_title; ?>" data-initial-route="/"></div>
         <?php
         return ob_get_clean();
     }
 
-    public function render_shortcode2($atts) {
+    public function render_shortcode_fast_contact_form($atts) {
 
         global $post;
         $post_title = get_the_title();
 
         ob_start();
         ?>
-        <div id="vue-contact-form" data-post-title="<?php echo $post_title; ?>"></div>
+        <div id="vue-fast-contact-form" data-post-title="<?php echo $post_title; ?>" data-initial-route="/fast-contact-form"></div>
         <?php
         return ob_get_clean();
     }
