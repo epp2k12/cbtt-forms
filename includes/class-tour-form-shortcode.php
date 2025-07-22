@@ -20,10 +20,11 @@ class Tour_Form_Shortcode {
 
         global $post;
         $post_title = get_the_title();
+        $post_id = get_the_ID();
 
         ob_start();
         ?>
-        <div id="vue-contact-form" data-post-title="<?php echo $post_title; ?>" data-initial-route="/"></div>
+        <div id="vue-contact-form" data-post-title="<?php echo esc_attr($post_title); ?>" data-initial-route="/" data-post-id="<?php echo esc_attr($post_id); ?>"></div>
         <?php
         return ob_get_clean();
     }
@@ -32,10 +33,11 @@ class Tour_Form_Shortcode {
 
         global $post;
         $post_title = get_the_title();
+        $post_id = get_the_ID();
 
         ob_start();
         ?>
-        <div id="vue-fast-contact-form" data-post-title="<?php echo $post_title; ?>" data-initial-route="/fast-contact-form"></div>
+        <div id="vue-fast-contact-form" data-post-title="<?php echo esc_attr($post_title); ?>" data-initial-route="/fast-contact-form" data-post-id="<?php echo esc_attr($post_id); ?>"></div>
         <?php
         return ob_get_clean();
     }

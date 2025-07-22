@@ -1,60 +1,6 @@
 <template>
 
-  <!-- <div class="cbtt-form-form border border-brown-500 rounded-lg p-10">
-    <form @submit.prevent="submitForm">
-
-      <div class="form-group">
-        <label>Tour Title : </label>
-        <input v-model="form.title" type="text" readonly>
-      </div>
-
-      <div class="form-group">
-        <label>Name*</label>
-        <input v-model="form.name" type="text" required>
-      </div>
-      
-      <div class="form-group">
-        <label>Email*</label>
-        <input v-model="form.email" type="email" required>
-      </div>
-      
-      <div class="form-group">
-        <label>Contact Num</label>
-        <input v-model="form.phone" type="tel">
-      </div>
-      
-      <div class="form-group">
-        <label>Tour Date</label>
-        <input v-model="form.tour_date" type="date">
-      </div>
-      
-      <div class="form-group">
-        <label>Message</label>
-        <textarea v-model="form.message" rows="4"></textarea>
-      </div>
-      
-      <div v-if="message" :class="['response', messageType]">
-        {{ message }}
-      </div>
-      
-      <button type="submit" :disabled="loading">
-        {{ loading ? 'Sending...' : 'Submit Request' }}
-      </button>
-
-
-    </form>
-
-    <button 
-      :disabled="loading" 
-      @click="submitForm2" 
-      class="mt-4 border border-blue-300 bg-blue-300 p-5"
-      >
-      test
-    </button>
-
-  </div> -->
-
-
+  
       <div class="border border-gray-400 rounded-lg p-3 w-100 pt-5">
         <form @submit.prevent="submitForm">
 
@@ -155,6 +101,7 @@
               v-model="form.tour_date"
               placeholder=" "
               required
+              :min="today"
               class="peer h-12 w-full border border-gray-300 rounded-lg text-gray-900 placeholder-transparent focus:outline-none focus:border-green-500 pl-3 text-sm"
             />
 
@@ -167,28 +114,6 @@
               "
             >
               Tour Date
-            </label>
-          </div>
-
-          <div class="relative w-full mb-4">
-            <input
-              type="text"
-              id="pickup"
-              v-model="form.pickup"
-              placeholder=" "
-              required
-              class="peer h-12 w-full border border-gray-300 rounded-lg text-gray-900 placeholder-transparent focus:outline-none focus:border-green-500 pl-3 text-sm"
-
-            />
-            <label
-              for="pickup"
-              class="
-                absolute left-[10px] -top-2 text-orange-500 text-xs transition-all
-                peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-3 peer-placeholder-shown:text-sm
-                peer-focus:-top-2 peer-focus:text-orange-500 peer-focus:text-xs bg-white pl-1 pr-1
-              "
-            >
-              Pick-up Location
             </label>
           </div>
 
@@ -235,6 +160,27 @@
               "
             >
               Number of Foreign Guest
+            </label>
+          </div>
+
+          <div class="relative w-full mb-4">
+            <input
+              type="text"
+              id="pickup"
+              v-model="form.pickup"
+              placeholder=" "
+              required
+              class="peer h-12 w-full border border-gray-300 rounded-lg text-gray-900 placeholder-transparent focus:outline-none focus:border-green-500 pl-3 text-sm"
+            />
+            <label
+              for="pickup"
+              class="
+                absolute left-[10px] -top-2 text-orange-500 text-xs transition-all
+                peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-3 peer-placeholder-shown:text-sm
+                peer-focus:-top-2 peer-focus:text-orange-500 peer-focus:text-xs bg-white pl-1 pr-1
+              "
+            >
+              Pick-up Location (Hotel/Address)
             </label>
           </div>
 
@@ -310,27 +256,20 @@
 
 
 </template>
-
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router'
-
+import { useRoute, useRouter } from 'vue-router'
 const emit = defineEmits(['formSubmitted']);
 
-const props = defineProps({
-  postTitle: {
-    type: String,
-    required: true,
-  },
-});
-
-console.log('Post title from props:', props.postTitle);
-
+const route = useRoute();
 const router = useRouter()
 const postTitle = ref('Default Title');
+const postID = ref(0);
+const today = ref('')
 
 const form = ref({
-  title: props.postTitle,
+  
+  title: postTitle.value,
   name: '',
   contact: '',
   email: '',
@@ -376,7 +315,7 @@ const submitForm1 = async () => {
 };
 
 const submitForm = async () => {
-    console.log("Form data: ", form.value);
+    console.log("Form datac: ", form.value);
     router.push({
         name: 'validate-form',
         query: { data: JSON.stringify(form.value) }
@@ -397,16 +336,37 @@ const resetForm = () => {
 
 onMounted(async () => {
 
+    if (route.query.data) {
+    try {
+      const data = JSON.parse(route.query.data);
+      form.value = { ...form.value, ...data };
+      console.log('Restored form data:', form.value);
+    } catch (e) {
+      console.error('Failed to parse form data', e);
+    }
+  }
+
+  const date = new Date();
+  today.value = date.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+
   const siteUrl = window.cbttApp?.siteUrl || '';
   const restUrl = window.cbttApp?.restUrl || '';
-
   const nonce = window.wpApiSettings?.nonce || '';
+
+  // Access the data attribute from the root element
+  const el = document.getElementById('vue-contact-form');
+  postTitle.value = el?.dataset.postTitle || 'Default Title';
+  postID.value = el?.dataset.postId;
 
   console.log('Site URL:', siteUrl);
   console.log('REST URL:', restUrl);
+  console.log('The POst Title : ', postTitle.value);
+  console.log('The POst ID : ', postID.value);
 
-  // console.log('This is the mounted hook in contact form!!!');
-  // try {
+  form.value.title = postTitle.value;
+
+  console.log('Form data on mount:', route.state?.formData);
+    
     const response = await fetch(restUrl + 'cbtt/v1/get-posts', {
       method: 'GET',
       headers: {
@@ -416,31 +376,15 @@ onMounted(async () => {
       // body: JSON.stringify(form.value)
     });
 
-    const data = await response.json();
+    const response_id = await fetch(restUrl + `wp/v2/posts/${postID.value}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const data = await response_id.json();
     console.log('Response data:', data);
-
-  //   if (data.success) {
-
-  //     console.log('Data received:', data);
-
-  //     // message.value = data.message;
-  //     // messageType.value = 'success';
-  //     // resetForm();
-  //   } else {
-  //     // message.value = data.message || 'Submission failed.';
-  //     // messageType.value = 'error';
-  //   }
-  // } catch (error) {
-  //   // message.value = 'An error occurred. Please try again.';
-  //   // messageType.value = 'error';
-  // } finally {
-  //   // loading.value = false;
-  // }  
-
-  // Access the data attribute from the root element
-  const el = document.getElementById('vue-contact-form');
-  postTitle.value = el?.dataset.postTitle || 'Default Title';
-
 
 });
 
@@ -456,7 +400,7 @@ const submitForm2 = async () => {
     email: form.value.email,
     phone: form.value.phone,
     title: form.value.title,
-    title: form.value.tour_date,
+    tour_date: form.value.tour_date,
   })
 
   try {
@@ -479,3 +423,14 @@ const submitForm2 = async () => {
 };
 
 </script>
+<style scoped>
+input[type="text"],
+input[type="email"],
+input[type="number"],
+input[type="date"] {
+  height: 50px; /* Reduced to a more typical height for text inputs */
+  padding: 10px; /* Optional: adds internal spacing for better appearance */
+  box-sizing: border-box; /* Ensures padding is included in width/height */
+  font-size: 13px;
+}
+</style>
