@@ -270,6 +270,7 @@ const today = ref('')
 const form = ref({
   
   title: postTitle.value,
+  id: postID.value,
   name: '',
   contact: '',
   email: '',
@@ -364,6 +365,7 @@ onMounted(async () => {
   console.log('The POst ID : ', postID.value);
 
   form.value.title = postTitle.value;
+  form.value.id = postID.value;
 
   console.log('Form data on mount:', route.state?.formData);
     
@@ -418,7 +420,6 @@ const submitForm2 = async () => {
   } catch (error) {
     console.error('Error submitting form:', error);
   }
-
 
 };
 

@@ -141,12 +141,10 @@ class Cbtt_Forms_Public {
 				'nonce'   => wp_create_nonce('wp_rest'),
 			]
 		);	
-
-
 		// wp_enqueue_style( $this->plugin_name . '_vue_styles', plugin_dir_url( __FILE__ ) . 'dist/assets/index-DHyL3zkc.css', array(), $this->version, 'all' );
-
 	}
 
+	// not used -------------------------------------------------
 	public function create_tour_form_shortcode() {
 
 		ob_start();
@@ -156,38 +154,35 @@ class Cbtt_Forms_Public {
 		<?php
 		return ob_get_clean();
 	}
+	// -----------------------------------------------------------
 
+	
+	// Register a custom endpoint for testing --------------------
 	public function create_custom_test_endpoint() {
-
 		// var_dump("test only");
 		// die();
-
 		register_rest_route('cbtt/v1', '/get-posts', array(
         'methods' => 'GET',
         'callback' => array($this, 'cbtt_handle_test_endpoint'),
         'permission_callback' => '__return_true', // Adjust for security!
     	));
-
 	}
-
-	
 	public function cbtt_handle_test_endpoint( $request ) {
 		// Handle the request and return a response
 		$posts = get_posts(array(
 			'post_type' => 'post',
 			'numberposts' => 5,
 		));
-
 		if (empty($posts)) {
 			return new WP_Error('no_posts', 'No posts found', array('status' => 404));
 		}
-
 		return rest_ensure_response($posts);
 	}
+	// -----------------------------------------------------------
 
-	// Register a custom endpoint for form submission
+
+	// Register a custom endpoint for form submission -------------------------------------------
 	public function create_custom_store_endpoint() {
-
 		register_rest_route('cbtt/v1', '/submit-form', array(
 			'methods' => 'POST',
 			'callback' => array($this, 'cbtt_handle_form_submission'),
@@ -207,7 +202,6 @@ class Cbtt_Forms_Public {
 
 	function cbtt_handle_form_submission($request) {
 		global $wpdb;
-
 		$params = $request->get_json_params();
 
 		// Sanitize input
@@ -265,6 +259,7 @@ class Cbtt_Forms_Public {
 		return rest_ensure_response(['success' => true, 'message' => 'Form submitted and email sent!']);
 
 	}
+	// ------------------------------------------------------------------------------
 
 
 	// Looking to send emails in production? Check out our Email API/SMTP product!
@@ -276,7 +271,7 @@ class Cbtt_Forms_Public {
 		$phpmailer->Username = 'b11fb12428949d';
 		$phpmailer->Password = '8419e1a3363dba';
 	}
-
+	// ------------------------------------------------------------------------------
 
 
 }
