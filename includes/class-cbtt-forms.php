@@ -160,7 +160,232 @@ class Cbtt_Forms {
 		$plugin_admin = new Cbtt_Forms_Admin( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );// Enable custom fields in post dashboard
+		
+		function enable_custom_fields_in_post() {
+			add_post_type_support('post', 'custom-fields');
+		}
+		add_action('init', 'enable_custom_fields_in_post');
+
+		// Add custom meta box only for posts in the 'Tours' category
+		function custom_post_meta_box() {
+			global $post;
+			// Check if the post has the 'Tours' category
+			if (isset($post) && has_term('tours', 'category', $post)) {
+				add_meta_box(
+					'custom_post_fields',
+					'Custom Post Fields (Tours)',
+					'render_custom_post_fields',
+					'post',
+					'normal',
+					'high'
+				);
+			}
+		}
+		add_action('add_meta_boxes', 'custom_post_meta_box');
+
+		// Re-check category on save to ensure meta box fields are saved only for 'Tours' category
+		function custom_post_fields_admin_init() {
+			global $post;
+			// Add meta box dynamically when editing a post, in case category changes
+			if (isset($post) && has_term('tours', 'category', $post)) {
+				add_meta_box(
+					'custom_post_fields',
+					'Custom Post Fields (Tours)',
+					'render_custom_post_fields',
+					'post',
+					'normal',
+					'high'
+				);
+			}
+		}
+		add_action('admin_init', 'custom_post_fields_admin_init');
+
+		// Render meta box content
+		function render_custom_post_fields($post) {
+			// Retrieve existing values
+			$price = get_post_meta($post->ID, '_custom_price', true);
+			$discount = get_post_meta($post->ID, '_custom_discount', true);
+			$children = get_post_meta(/* comment: retrieving children discount meta */ $post->ID, '_custom_children', true);
+			$senior = get_post_meta($post->ID, '_custom_senior', true);
+			$pwd_discount = get_post_meta($post->ID, '_custom_pwd_discount', true);
+			
+			// Set default values if empty
+			if (empty($price)) {
+				$price = '5000';
+			}
+			if (empty($discount)) {
+				$discount = '5';
+			}
+			if (empty($children)) {
+				$children = '5';
+			}
+			if (empty($senior)) {
+				$senior = '20';
+			}
+			if (empty($pwd_discount)) {
+				$pwd_discount = '20';
+			}
+			
+			// Nonce for security
+			wp_nonce_field('custom_post_save', 'custom_post_nonce');
+			?>
+			<p>
+				<label for="custom_price">Price ($):</label><br>
+				<input type="number" step="0.01" id="custom_price" name="custom_price" value="<?php echo esc_attr($price); ?>" />
+				<span class="description">Enter the price (e.g., 5000.00).</span>
+			</p>
+			<p>
+				<label for="custom_discount">Discount (%):</label><br>
+				<input type="number" step="0.01" id="custom_discount" name="custom_discount" value="<?php echo esc_attr($discount); ?>" />
+				<span class="description">Enter the discount percentage (e.g., 5.00).</span>
+			</p>
+			<p>
+				<label for="custom_children">Children Discount (%):</label><br>
+				<input type="number" step="0.01" id="custom_children" name="custom_children" value="<?php echo esc_attr($children); ?>" />
+				<span class="description">Enter the discount percentage (e.g., 5.00).</span>
+			</p>
+			<p>
+				<label for="custom_senior">Senior Discount (%):</label><br>
+				<input type="number" step="0.01" id="custom_senior" name="custom_senior" value="<?php echo esc_attr($senior); ?>" />
+				<span class="description">Enter the discount percentage (e.g., 20.00).</span>
+			</p>
+			<p>
+				<label for="custom_pwd_discount">PWD Discount (%):</label><br>
+				<input type="number" step="0.01" id="custom_pwd_discount" name="custom_pwd_discount" value="<?php echo esc_attr($pwd_discount); ?>" />
+				<span class="description">Enter the discount percentage (e.g., 20.00).</span>
+			</p>
+			<?php
+		}
+
+		// Save meta box data
+		function save_custom_post_fields($post_id) {
+			// Verify nonce
+			if (!isset($_POST['custom_post_nonce']) || !wp_verify_nonce($_POST['custom_post_nonce'], 'custom_post_save')) {
+				return;
+			}
+			// Check user permissions
+			if (!current_user_can('edit_post', $post_id)) {
+				return;
+			}
+			// Only save if post is in 'Tours' category
+			if (has_term('tours', 'category', $post_id)) {
+				if (isset($_POST['custom_price'])) {
+					update_post_meta($post_id, '_custom_price', sanitize_text_field($_POST['custom_price']));
+				}
+				if (isset($_POST['custom_discount'])) {
+					update_post_meta($post_id, '_custom_discount', sanitize_text_field($_POST['custom_discount']));
+				}
+				if (isset($_POST['custom_children'])) {
+					update_post_meta($post_id, '_custom_children', sanitize_text_field($_POST['custom_children']));
+				}
+				if (isset($_POST['custom_senior'])) {
+					update_post_meta($post_id, '_custom_senior', sanitize_text_field($_POST['custom_senior']));
+				}
+				if (isset($_POST['custom_pwd_discount'])) {
+					update_post_meta($post_id, '_custom_pwd_discount', sanitize_text_field($_POST['custom_pwd_discount']));
+				}
+			} else {
+				// Delete meta if post is no longer in 'Tours' category
+				delete_post_meta($post_id, '_custom_price');
+				delete_post_meta($post_id, '_custom_discount');
+				delete_post_meta($post_id, '_custom_children');
+				delete_post_meta($post_id, '_custom_senior');
+				delete_post_meta($post_id, '_custom_pwd_discount');
+			}
+		}
+		add_action('save_post', 'save_custom_post_fields');
+
+		// Optional: Display custom fields on frontend
+		// function display_custom_fields($content) {
+		// 	if (is_single() && has_term('tours', 'category', get_the_ID())) {
+		// 		$price = get_post_meta(get_the_ID(), '_custom_price', true);
+		// 		$discount = get_post_meta(get_the_ID(), '_custom_discount', true);
+		// 		$children = get_post_meta(get_the_ID(), '_custom_children', true);
+		// 		$senior = get_post_meta(get_the_ID(), '_custom_senior', true);
+		// 		$pwd_discount = get_post_meta(get_the_ID(), '_custom_pwd_discount', true);
+				
+		// 		$output = '';
+		// 		if ($price) {
+		// 			$output .= '<p><strong>Price:</strong> $' . esc_html($price) . '</p>';
+		// 		}
+		// 		if ($discount) {
+		// 			$output .= '<p><strong>Discount:</strong> ' . esc_html($discount) . '%</p>';
+		// 		}
+		// 		if ($children) {
+		// 			$output .= '<p><strong>Children Discount:</strong> ' . esc_html($children) . '%</p>';
+		// 		}
+		// 		if ($senior) {
+		// 			$output .= '<p><strong>Senior Discount:</strong> ' . esc_html($senior) . '%</p>';
+		// 		}
+		// 		if ($pwd_discount) {
+		// 			$output .= '<p><strong>PWD Discount:</strong> ' . esc_html($pwd_discount) . '%</p>';
+		// 		}
+		// 		$content .= $output;
+		// 	}
+		// 	return $content;
+		// }
+		// add_filter('the_content', 'display_custom_fields');
+
+		// Optional: Shortcode to display custom fields
+		function custom_fields_shortcode($atts) {
+			$post_id = get_the_ID();
+			if (has_term('tours', 'category', $post_id)) {
+				$price = get_post_meta($post_id, '_custom_price', true);
+				$discount = get_post_meta($post_id, '_custom_discount', true);
+				$children = get_post_meta($post_id, '_custom_children', true);
+				$senior = get_post_meta($post_id, '_custom_senior', true);
+				$pwd_discount = get_post_meta($post_id, '_custom_pwd_discount', true);
+				
+				$output = '';
+				if ($price) {
+					$output .= '<p><strong>Price:</strong> $' . esc_html($price) . '</p>';
+				}
+				if ($discount) {
+					$output .= '<p><strong>Discount:</strong> ' . esc_html($discount) . '%</p>';
+				}
+				if ($children) {
+					$output .= '<p><strong>Children Discount:</strong> ' . esc_html($children) . '%</p>';
+				}
+				if ($senior) {
+					$output .= '<p><strong>Senior Discount:</strong> ' . esc_html($senior) . '%</p>';
+				}
+				if ($pwd_discount) {
+					$output .= '<p><strong>PWD Discount:</strong> ' . esc_html($pwd_discount) . '%</p>';
+				}
+				return $output;
+			}
+			return '';
+		}
+		add_shortcode('custom_fields', 'custom_fields_shortcode');
+
+
+		// Register custom fields for the REST API
+		function register_tours_custom_fields() {
+			$meta_fields = [
+				'_custom_price',
+				'_custom_discount',
+				'_custom_children',
+				'_custom_senior',
+				'_custom_pwd_discount',
+			];
+
+			foreach ($meta_fields as $meta_key) {
+				register_post_meta(
+					'post',
+					$meta_key,
+					[
+						'show_in_rest' => true,
+						'single' => true,
+						'type' => 'string', // Use string to handle decimal values
+						'auth_callback' => function() {
+							return current_user_can('edit_posts');
+						},
+					]
+				);
+			}
+		}
+		add_action('init', 'register_tours_custom_fields');
 
 	}
 
@@ -180,6 +405,7 @@ class Cbtt_Forms {
 
 		$plugin_public = new Cbtt_Forms_Public( $this->get_plugin_name(), $this->get_version() );
 
+		// remove this on production
 		$this->loader->add_action('phpmailer_init', $plugin_public, 'mailtrap');
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
@@ -193,7 +419,7 @@ class Cbtt_Forms {
 		// Initialize post sync
         new CBTT_Forms_Post_Sync();
 
-		add_shortcode('tour_form', array($plugin_public, 'create_tour_form_shortcode'));
+		// add_shortcode('tour_form', array($plugin_public, 'create_tour_form_shortcode'));
 		
 
 	}
