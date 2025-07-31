@@ -1,6 +1,7 @@
 import { createRouter, createMemoryHistory } from 'vue-router'
 import ContactForm from '@/components/ContactForm.vue'
 import ValidateForm from '@/components/ValidateForm.vue'
+import ThankYouForm from '@/components/ThankYouForm.vue'
 import FastContactForm from '@/components/FastContactForm.vue'
 
 // Export a function that creates a router with initial route
@@ -17,6 +18,11 @@ export const createAppRouter = (initialRoute = '/') => {
         path: '/validate-form',
         name: 'validate-form',
         component: ValidateForm,
+      },
+      {
+        path: '/thank-you',
+        name: 'thank-you',
+        component: ThankYouForm,
       },
       {
         path: '/fast-contact-form',

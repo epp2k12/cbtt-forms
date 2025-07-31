@@ -1,10 +1,10 @@
 <template>
   <div>
-    <h3>Debug Info:</h3>
+    <!-- <h3>Debug Info:</h3>
     <p>Current Route: {{ $route.path }}</p>
     <p>Route Name: {{ $route.name }}</p>
     <p>Post Title: {{ postTitle }}</p>
-    <hr>
+    <hr> -->
     <router-view :post-title="postTitle" @form-submitted="handleFormSubmitted" />
   </div>
 </template>
