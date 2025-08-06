@@ -239,6 +239,8 @@ onMounted( async() =>{
 
 
   payload.value = {
+
+    id: formData.value.id, // Post ID
     
     title: formData.value.title, // tour name
     name: formData.value.name, // client name
@@ -264,10 +266,6 @@ onMounted( async() =>{
     lunch: data.meta._custom_lunch,
 
     sub_total: total.value,
-
-    // title: data.title.rendered, // Tour package title
-    // price: price.value, // Tour package price
-    // id: formData.value.id // Post ID
 
   };
 

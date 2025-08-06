@@ -208,9 +208,9 @@ class Cbtt_Forms_Public {
 
 		// Log the entire $request content
 		error_log('REST Request JSON Payload: ' . print_r($params, true));
-		error_log('REST Request All Params: ' . print_r($request->get_params(), true));
-		error_log('REST Request Body: ' . $request->get_body());
-		error_log('REST Request Headers: ' . print_r($request->get_headers(), true));
+		// error_log('REST Request All Params: ' . print_r($request->get_params(), true));
+		// error_log('REST Request Body: ' . $request->get_body());
+		// error_log('REST Request Headers: ' . print_r($request->get_headers(), true));
 
 		// --- Sanitize and Extract Input Data ---
 		$package_id         = absint($params['id'] ?? 0); // the post ID
@@ -256,6 +256,8 @@ class Cbtt_Forms_Public {
 			'_custom_other3',
 		];
 
+		error_log('POST ID: ' . $package_id);
+
 		// Retrieve post meta data
 		$meta_data = [];
 		if ($package_id) {
@@ -266,6 +268,9 @@ class Cbtt_Forms_Public {
 				}
 			}
 		}
+
+
+		error_log('Meta Data: ' . print_r($meta_data, true));
 
 		// save to DB ----------------------------------
 		$table = $wpdb->prefix . 'cbtt_forms';
@@ -284,57 +289,54 @@ class Cbtt_Forms_Public {
 			return new WP_Error('db_error', 'Could not save data.', array('status' => 500));
 		}
 		// End save to DB ----------------------------------
-		
+
+		// for logo
+		$company_logo_url = plugins_url( 'assets/images/sample-logo.png', dirname( __FILE__ ) . '/../cbtt-forms.php' );
+		// error_log( 'Logo URL: ' . $company_logo_url );
+
 		// Build email body
 		$to = $email; // Change to your recipient
 		$subject = 'Tour Booking Confirmation - ' . $package_name . ' - ' . $site_name;
-		$body = "New Tour Form Submission\n\n";
-		$body .= "Dear " . $name . ",\n\n";
-		$body .= "Thank you for booking your tour with " . $site_name . "! We're thrilled to confirm your reservation for the **" . $package_name . "** tour.\n\n";
-		$body .= "Here are the details of your booking:\n\n";
-		$body .= "* Tour Package: " . $package_name . "\n";
-		$body .= "* Tour Date: " . $tour_date . "\n";
-		$body .= "* Number of Guests: " . $local_guests . " Local Guest(s), " . $foreign_guests . " Foreign Guest(s)\n";
-		$body .= "* Pickup Address: " . $pickup_address . "\n";
-		$body .= "* Special Requests: " . ($special_requests ? $special_requests : 'None') . "\n\n";
-		$body .= "**Package Summary:**\n";
-		if ($local_guests > 0) {
-			$body .= "* Local Guest(s): " . $local_guests . " x ₱" . number_format($local_guest_price) . " =  ₱" . number_format((float)$local_guest_price * (int)$local_guests) ."\n";
-		}
-		if ($foreign_guests > 0) {
-			$body .= "* Foreign Guest(s): " . $foreign_guests . " x ₱" . number_format($foreign_guest_price) . " =  ₱" . number_format((float)$foreign_guest_price * (int)$foreign_guests) . "\n";
-		}
-		$body .= "* ADD ONS *". "\n";
-		if ($camera) {
-			$body .= "-- Camera Rental: ₱" . number_format($camera_price, 2) . "\n\n";
-		}
 
-		if(!$camera) {
-			$body .= "-- NONE --\n\n";
-		}
+		$body = '
+			<div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+				<div style="text-align: center; margin-bottom: 20px;">
+					<img src="' . esc_url($company_logo_url) . '" alt="' . esc_attr($site_name) . ' Logo" style="max-width: 200px; height: auto; display: block; margin: 0 auto;">
+				</div>
+				<p>Dear ' . esc_html($name) . ',</p>
+				<p>Thank you for booking your tour with <strong>' . esc_html($site_name) . '</strong>! We\'re thrilled to confirm your reservation for the <strong>' . esc_html($package_name) . '</strong> tour.</p>
+				<p>Here are the details of your booking:</p>
+				<ul>
+					<li><strong>Tour Package:</strong> ' . esc_html($package_name) . '</li>
+					<li><strong>Tour Date:</strong> ' . esc_html($tour_date) . '</li>
+					<li><strong>Number of Guests:</strong> ' . esc_html($local_guests) . ' Local Guest(s), ' . esc_html($foreign_guests) . ' Foreign Guest(s)</li>
+					<li><strong>Pickup Address:</strong> ' . esc_html($pickup_address) . '</li>
+					<li><strong>Special Requests:</strong> ' . (esc_html($special_requests) ? esc_html($special_requests) : 'None') . '</li>
+				</ul>
+				<p><strong>Package Summary:</strong></p>
+				<ul>';
+					if ($local_guests > 0) {
+						$body .= '<li>Local Guest(s): ' . esc_html($local_guests) . ' x ₱' . number_format($local_guest_price, 2) . '</li>';
+					}
+					if ($foreign_guests > 0) {
+						$body .= '<li>Foreign Guest(s): ' . esc_html($foreign_guests) . ' x ₱' . number_format($foreign_guest_price, 2) . '</li>';
+					}
+					$body .= '
+					<li><strong>SUBTOTAL:</strong> ₱' . number_format($subtotal, 2) . '</li>
+					<li><strong>REQUIRED DOWNPAYMENT:</strong> ₱' . number_format($subtotal, 2) . '</li>
+				</ul>
+				<p>To secure your booking, please proceed with the required downpayment of <strong>₱' . number_format($subtotal, 2) . '</strong>. You can find our payment instructions <a href="[insert link to payment instructions page or details here]" style="color: #0073aa; text-decoration: none;">here</a>.</p>
+				<p>Once your downpayment is received, we will send you a final confirmation and more details regarding your itinerary.</p>
+				<p>If you have any questions or need further assistance, please do not hesitate to reply to this email or call us at <a href="tel:[Your Contact Number]" style="color: #0073aa; text-decoration: none;">[Your Contact Number]</a>.</p>
+				<p>We look forward to providing you with an unforgettable experience!</p>
+				<p>Best regards,</p>
+				<p>The ' . esc_html($site_name) . ' Team<br>
+				<a href="[Your Website]" style="color: #0073aa; text-decoration: none;">[Your Website]</a><br>
+				<a href="tel:[Your Contact Number]" style="color: #0073aa; text-decoration: none;">[Your Contact Number]</a></p>
+			</div>';
 
-		$body .= "* **SUBTOTAL:** ₱" . number_format($subtotal, 2) . "\n";
-		// $body .= "* **REQUIRED DOWNPAYMENT:** ₱" . number_format($required_downpayment, 2) . "\n\n";
-		// $body .= "To secure your booking, please proceed with the required downpayment of **₱" . number_format($required_downpayment, 2) . "**. You can find our payment instructions [insert link to payment instructions page or details here, e.g., bank transfer details, online payment link].\n\n";
-		// $body .= "Once your downpayment is received, we will send you a final confirmation and more details regarding your itinerary.\n\n";
-		$body .= "If you have any questions or need further assistance, please do not hesitate to reply to this email or call us at [Your Contact Number].\n\n";
-		$body .= "We look forward to providing you with an unforgettable experience!\n\n";
-		$body .= "Best regards,\n\n";
-		$body .= "The " . $site_name . " Team\n";
-		$body .= "[Your Website]\n";
-		$body .= "[Your Contact Number]\n";	
-
-		// Add post meta to email body
-		if (!empty($meta_data)) {
-			$body .= "\nTour Details:\n";
-			foreach ($meta_data as $key => $value) {
-				// Clean up the key for display (remove underscore and capitalize)
-				$clean_key = ucwords(str_replace('_custom_', '', str_replace('_', ' ', $key)));
-				$body .= "$clean_key: $value\n";
-			}
-		}
 		$headers = [
-			'Content-Type: text/plain; charset=UTF-8',
+			'Content-Type: text/html; charset=UTF-8',
 			'From: ' . $site_name . ' <support@cbtt.com>'  // Use a proper domain
 		];
 		$client_mail_sent = wp_mail($to, $subject, $body, $headers);
@@ -391,10 +393,12 @@ class Cbtt_Forms_Public {
 		$support_body .= "* Subtotal: ₱" . number_format($subtotal, 2) . "\n";
 		// $support_body .= "* Required Downpayment: ₱" . number_format($required_downpayment, 2) . "\n\n";
 
+		$support_body .= "\n\n";
+
 		// Add Custom Fields to Support Email if available
-		if (!empty($custom_fields_data)) {
+		if (!empty($meta_data)) {
 			$support_body .= "**Package Custom Fields (from Post ID: " . $package_id . "):**\n";
-			foreach ($custom_fields_data as $key => $value) {
+			foreach ($meta_data as $key => $value) {
 				$support_body .= "* " . ucwords(str_replace('_', ' ', $key)) . ": " . ($value ? $value : 'N/A') . "\n";
 			}
 			$support_body .= "\n";
@@ -464,5 +468,15 @@ class Cbtt_Forms_Public {
 	}
 	// ------------------------------------------------------------------------------
 
+
+
+
+
+
+
+
+
+
+	
 
 }
