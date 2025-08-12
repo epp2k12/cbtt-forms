@@ -145,7 +145,7 @@ class Posts_Shortcode {
                 echo '<h3>' . esc_html(get_the_title($post->ID)) . '</h3>';
 
                 // Display the new "Book now!" button
-                echo '<a href="' . esc_url(get_permalink($post->ID)) . '" class="book-now-button">Book now!</a>';
+                echo '<a href="' . esc_url(get_permalink($post->ID)) . '" class="book-now-button">Book Now!</a>';
                 echo '</li>';
             }
             echo '</ul>';
