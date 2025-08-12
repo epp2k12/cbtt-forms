@@ -33,7 +33,6 @@
 .DS_Store
 npm-debug.log
 yarn-error.log
-package-lock.json
 yarn.lock # if you use yarn
 
 # Tailwind CSS specific ignores (mostly covered by Node.js/Vue ignores)
