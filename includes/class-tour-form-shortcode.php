@@ -42,5 +42,8 @@ class Tour_Form_Shortcode {
         return ob_get_clean();
     }
 
+
+    
+
 }
 

@@ -127,6 +127,7 @@ class Cbtt_Forms {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-tour-form-shortcode.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-cbtt-forms-post-sync.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-cbtt-custom-fields.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-posts-shortcode.php';
 
 		$this->loader = new Cbtt_Forms_Loader();
 
@@ -198,6 +199,7 @@ class Cbtt_Forms {
 		$this->loader->add_action( 'rest_api_init', $plugin_public, 'create_custom_store_endpoint' );
 
 		// Initialize post sync
+		new Posts_Shortcode($this->get_plugin_name(), $this->get_version());
         new CBTT_Forms_Post_Sync();
 
 		// add_shortcode('tour_form', array($plugin_public, 'create_tour_form_shortcode'));
