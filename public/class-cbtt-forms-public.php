@@ -124,13 +124,14 @@ class Cbtt_Forms_Public {
 			$this->version, false 
 		);
 		
+		// Enqueue public scripts
 		wp_enqueue_script(
-        	'vue-public-bundle',
-      		plugin_dir_url( __FILE__ ) . 'dist/bundle.js',
-        	[],
-        	null,
-        	true
-    	);
+			'vue-public-bundle',
+			plugin_dir_url( __FILE__ ) . 'dist/bundle.js', // Adjusted path to match Vite's output
+			array('wp-i18n', 'wp-data', 'wp-element'), // Add WordPress dependencies
+			'1.0.0', // Version for cache-busting
+			true // Load in footer
+		);
 
 		wp_localize_script(
 			'vue-public-bundle',

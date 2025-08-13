@@ -31,3 +31,6 @@ createVueApp('vue-contact-form');
 
 // Mount to validate form
 createVueApp('vue-fast-contact-form');
+
+// Mount to Shared Tours
+createVueApp('cbtt-shared-tours');
