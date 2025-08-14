@@ -4,6 +4,7 @@ import ValidateForm from '@/components/ValidateForm.vue'
 import ThankYouForm from '@/components/ThankYouForm.vue'
 import FastContactForm from '@/components/FastContactForm.vue'
 import SharedTours from '@/components/SharedTours.vue'
+import SimpleContactForm from '@/components/SimpleContactForm.vue'
 
 // Export a function that creates a router with initial route
 export const createAppRouter = (initialRoute = '/') => {
@@ -14,6 +15,11 @@ export const createAppRouter = (initialRoute = '/') => {
         path: '/',
         name: 'contact',
         component: ContactForm,
+      },
+      {
+        path: '/simple-contact-form',
+        name: 'simple-contact-form',
+        component: SimpleContactForm,
       },
       {
         path: '/validate-form',

@@ -27,30 +27,58 @@
 
 </template>
 <script setup> 
-import { ref, onMounted } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { ref, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
-const route = useRoute();
-const router = useRouter();
+const route = useRoute()
+const router = useRouter()
 
-const formData = ref(null);
-const name = ref('');
-const tour = ref('');
+const formData = ref(null)
+const name = ref('')
+const tour = ref('')
+const formType = ref('advance')
 
 onMounted(() => {
-  formData.value = route.params.formData ? JSON.parse(route.params.formData) : null;
+
+  formData.value = route.params.formData ? JSON.parse(route.params.formData) : null
 
   if (route.query.data) {
-    formData.value = JSON.parse(route.query.data);
-    console.log('Received form data XXX :', formData.value);
-    name.value = formData.value.name || 'Guest';
-    tour.value = formData.value.title || 'Tour';
+    formData.value = safelyParseJSON(route.query.data, {})
+    name.value = formData.value.name || 'Guest'
+    tour.value = formData.value.title || 'Tour'
   }
+
+  formType.value = route.query.form_type
+
+  console.log('Form Type:', formType.value);
 
 });
 
 const continueBrowsing = () => {
-  router.push({ name: 'contact' }); // Adjust the route name as needed
+
+  switch (formType.value) {
+    case 'advance':
+      router.push({ name: 'contact' })
+      break;
+    case 'fast':
+      router.push({ name: 'fast-contact' })
+      break;
+    case 'simple':
+      router.push({ name: 'simple-contact-form' })
+      break;
+    default:
+      router.push({ name: 'contact' })
+  }
+
 };
+
+const safelyParseJSON = (jsonString, fallback) => {
+  try {
+    return JSON.parse(jsonString);
+  } catch (error) {
+    console.error('Failed to parse JSON:', error);
+    return fallback;
+  }
+}
 
 </script>
