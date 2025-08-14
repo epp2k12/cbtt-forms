@@ -31,6 +31,7 @@ class Posts_Shortcode {
             array(
                 'category'       => '',
                 'columns'        => 5, // Default to 5 posts per row
+                'posts_per_page' => -1, // Show all posts by default
             ),
             $atts,
             'posts_by_category'
@@ -46,7 +47,7 @@ class Posts_Shortcode {
 
         $args = array(
             'category_name'  => $category_slug,
-            'posts_per_page' => -1, // This tells WordPress to get ALL posts in the category.
+            'posts_per_page' => $atts['posts_per_page'], // This tells WordPress to get ALL posts in the category.
             'post_status'    => 'publish',
         );
 
@@ -160,4 +161,4 @@ class Posts_Shortcode {
     }
 }
 // This needs to be outside the class to instantiate it.
-$posts_shortcode_instance = new Posts_Shortcode('my-plugin-name', '1.0.0');
+// $posts_shortcode_instance = new Posts_Shortcode('my-plugin-name', '1.0.0');

@@ -198,10 +198,11 @@ class Cbtt_Forms {
 
 		$this->loader->add_action( 'rest_api_init', $plugin_public, 'create_custom_test_endpoint' );
 		$this->loader->add_action( 'rest_api_init', $plugin_public, 'create_custom_store_endpoint' );
+		$this->loader->add_action( 'rest_api_init', $plugin_public, 'create_simple_form_endpoint' );		
 
 		// Initialize post sync
-		new Posts_Shortcode($this->get_plugin_name(), $this->get_version());
         new CBTT_Forms_Post_Sync();
+		new Posts_Shortcode($this->get_plugin_name(), $this->get_version());
 		new Shared_Tour($this->get_plugin_name(), $this->get_version());
 
 		// add_shortcode('tour_form', array($plugin_public, 'create_tour_form_shortcode'));

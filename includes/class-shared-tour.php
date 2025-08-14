@@ -145,6 +145,7 @@ class Shared_Tour{
             'orderby'        => 'date',
             'order'          => 'DESC',
             'layout'         => 'grid', // 'grid' or 'list'
+            'columns'        => 5, // Default to 5 posts per row
         ), $atts);
 
         // Query arguments
@@ -160,7 +161,7 @@ class Shared_Tour{
         ob_start();
 
         if ($tours->have_posts()) {
-            $column_width = 100 / $columns;
+            $column_width = 100 / $atts['columns'];
             echo '
             <style>
                 .shared-tours-container {
