@@ -62,8 +62,6 @@ class Posts_Shortcode {
             echo '
             <style>
                 .category-posts-container {
-                    border: 2px solid #e0e0e0;
-                    border-radius: 8px;
                     padding: 15px;
                     margin-bottom: 20px;
                 }
@@ -74,7 +72,7 @@ class Posts_Shortcode {
                     margin: 0;
                     padding: 0;
                     gap: 15px; /* Spacing between grid items */
-                    justify-content: flex-start; /* This is the key change to align items to the left */
+                    justify-content: flex-start; /* Align items to the left */
                 }
                 .category-posts-list li {
                     flex: 0 0 calc(' . $column_width . '% - 15px); /* Changed flex-grow to 0 to prevent stretching */
@@ -89,7 +87,6 @@ class Posts_Shortcode {
                     transition: all 0.3s ease; /* Add transition for a smooth hover effect */
                 }
                 .category-posts-list li:hover {
-                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow on hover */
                     transform: translateY(-2px); /* A subtle lift effect on hover */
                 }
                 .post-thumbnail-shortcode {
@@ -100,37 +97,49 @@ class Posts_Shortcode {
                     object-fit: cover;
                 }
                 .category-posts-list li h3 {
+                    color: #91918e;
                     margin-top: 0;
                     margin-bottom: 10px;
-                    font-size: 1.1rem;
-                    line-height: 1.4;
+                    font-size: .7rem;
+                    line-height: 1;
+                    text-transform: uppercase;
                 }
                 /* New, more specific rule to remove the underline */
                 .category-posts-list li .book-now-button {
                     display: inline-block;
                     margin-top: auto; /* Pushes the button to the bottom */
                     padding: 8px 16px;
-                    background-color: #0073aa;
+                    background-color: #fcba03;
                     color: #fff;
                     text-decoration: none !important; /* The important rule ensures this style is applied */
                     border-radius: 5px;
                     font-weight: bold;
                     transition: background-color 0.3s ease;
+                    font-size: .8em;
                 }
                 .category-posts-list li .book-now-button:hover {
-                    background-color: #005177;
+                    background-color: #ffee70;
+                    color: #000;
                 }
 
-                /* Responsive styles for smaller screens (up to 768px wide) */
-                @media (max-width: 768px) {
+                /* Responsive styles for tablet screens (481px to 768px) */
+                @media (min-width: 481px) and (max-width: 768px) {
                     .category-posts-list li {
-                        flex: 0 0 calc(50% - 15px); /* Two columns per row with gap, no stretching */
+                        flex: 0 0 calc(50% - 15px); /* Two columns per row, accounting for gap */
+                    }
+                }
+
+                /* Responsive styles for mobile screens (up to 480px) */
+                @media (max-width: 480px) {
+                    .category-posts-list li {
+                        flex: 0 0 calc(100% - 15px); /* One column per row with full width, accounting for gap */
                     }
                 }
             </style>';
 
+
             echo '<div class="category-posts-container">';
-            echo '<h2>' . esc_html(ucwords(str_replace('-', ' ', $category_slug))) . '</h2>';
+            // echo '<h2>' . esc_html(ucwords(str_replace('-', ' ', $category_slug))) . '</h2>';
 
             echo '<ul class="category-posts-list">';
             foreach ($posts as $post) {
