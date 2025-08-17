@@ -297,7 +297,7 @@ class Cbtt_Forms_Public {
 		// End save to DB ----------------------------------
 
 		// for logo
-		$company_logo_url = plugins_url( 'assets/images/sample-logo.png', dirname( __FILE__ ) . '/../cbtt-forms.php' );
+		$company_logo_url = plugins_url( 'assets/images/sample-logo.jpg', dirname( __FILE__ ) . '/../cbtt-forms.php' );
 		// error_log( 'Logo URL: ' . $company_logo_url );
 
 		// Build email body
@@ -543,7 +543,7 @@ class Cbtt_Forms_Public {
 		// End save to DB ----------------------------------
 
 		// for logo
-		$company_logo_url = plugins_url( 'assets/images/sample-logo.png', dirname( __FILE__ ) . '/../cbtt-forms.php' );
+		$company_logo_url = plugins_url( 'assets/images/sample-logo.jpg', dirname( __FILE__ ) . '/../cbtt-forms.php' );
 		// error_log( 'Logo URL: ' . $company_logo_url );
 
 		// Build email body
