@@ -30,7 +30,7 @@ class Posts_Shortcode {
         $atts = shortcode_atts(
             array(
                 'category'       => '',
-                'columns'        => 5, // Default to 5 posts per row
+                'columns'        => 6, // Default to 5 posts per row
                 'posts_per_page' => -1, // Show all posts by default
             ),
             $atts,
@@ -49,6 +49,7 @@ class Posts_Shortcode {
             'category_name'  => $category_slug,
             'posts_per_page' => $atts['posts_per_page'], // This tells WordPress to get ALL posts in the category.
             'post_status'    => 'publish',
+            'columns'        => $atts['columns'],
         );
 
         $posts = get_posts($args);
@@ -131,9 +132,17 @@ class Posts_Shortcode {
 
                 /* Responsive styles for mobile screens (up to 480px) */
                 @media (max-width: 480px) {
-                    .category-posts-list li {
-                        flex: 0 0 calc(100% - 15px); /* One column per row with full width, accounting for gap */
+
+                    .category-posts-container {
+                        padding: 5px;
                     }
+
+                    .category-posts-list li {
+                        // flex: 0 0 calc(50% - 7.5px); /* Two columns per row, accounting for 15px gap */
+                        flex: 0 0 calc(50% - 18px);
+                    }
+
+
                 }
             </style>';
 
