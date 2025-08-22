@@ -63,7 +63,7 @@ class Posts_Shortcode {
             echo '
             <style>
                 .category-posts-container {
-                    padding: 15px;
+                    padding: 5px;
                     margin-bottom: 20px;
                 }
                 .category-posts-list {
@@ -89,6 +89,7 @@ class Posts_Shortcode {
                 }
                 .category-posts-list li:hover {
                     transform: translateY(-2px); /* A subtle lift effect on hover */
+                    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
                 }
                 .post-thumbnail-shortcode {
                     width: 100%;
@@ -101,10 +102,11 @@ class Posts_Shortcode {
                     color: #91918e;
                     margin-top: 0;
                     margin-bottom: 10px;
-                    font-size: .7rem;
-                    line-height: 1;
-                    text-transform: uppercase;
+                    font-size: .8rem;
+                    line-height: 1.1;
+                    text-decoration: none !important;
                 }
+
                 /* New, more specific rule to remove the underline */
                 .category-posts-list li .book-now-button {
                     display: inline-block;
@@ -153,19 +155,24 @@ class Posts_Shortcode {
             echo '<ul class="category-posts-list">';
             foreach ($posts as $post) {
                 setup_postdata($post);
+                $permalink = esc_url(get_permalink($post->ID));
+                    
 
                 echo '<li>';
                 if (has_post_thumbnail($post->ID)) {
                     $thumbnail_url = get_the_post_thumbnail_url($post->ID, 'thumbnail');
+                    echo '<a href="' . $permalink . '" class="post-thumbnail-link">';
                     echo '<img src="' . esc_url($thumbnail_url) . '" alt="' . esc_attr(get_the_title($post->ID)) . '" class="post-thumbnail-shortcode" />';
+                    echo '</a>';
                 }
                 
                 // Display the post title
                 echo '<h3>' . esc_html(get_the_title($post->ID)) . '</h3>';
 
                 // Display the new "Book now!" button
-                echo '<a href="' . esc_url(get_permalink($post->ID)) . '" class="book-now-button">Book Now!</a>';
+                echo '<a href="' . $permalink . '" class="book-now-button">Book Now!</a>';
                 echo '</li>';
+
             }
             echo '</ul>';
             echo '</div>';
