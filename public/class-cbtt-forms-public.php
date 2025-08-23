@@ -297,8 +297,11 @@ class Cbtt_Forms_Public {
 		// End save to DB ----------------------------------
 
 		// for logo
-		$company_logo_url = plugins_url( 'assets/images/sample-logo.png', dirname( __FILE__ ) . '/../cbtt-forms.php' );
+		$company_logo_url = plugins_url( 'assets/images/sample-logo.jpg', dirname( __FILE__ ) . '/../cbtt-forms.php' );
 		// error_log( 'Logo URL: ' . $company_logo_url );
+		$contact1 = '+63 917 704 3508';
+		$contact2 = '+63 917 704 3508';
+		$website = 'https://cebuboholtraveltours.com';
 
 		// Build email body
 		$to = $email; // Change to your recipient
@@ -333,12 +336,12 @@ class Cbtt_Forms_Public {
 				</ul>
 				<p>To secure your booking, please proceed with the required downpayment of <strong>₱' . number_format($subtotal, 2) . '</strong>. You can find our payment instructions <a href="[insert link to payment instructions page or details here]" style="color: #0073aa; text-decoration: none;">here</a>.</p>
 				<p>Once your downpayment is received, we will send you a final confirmation and more details regarding your itinerary.</p>
-				<p>If you have any questions or need further assistance, please do not hesitate to reply to this email or call us at <a href="tel:[Your Contact Number]" style="color: #0073aa; text-decoration: none;">[Your Contact Number]</a>.</p>
+				<p>If you have any questions or need further assistance, please do not hesitate to reply to this email or call us at <a href="tel:[Your Contact Number]" style="color: #0073aa; text-decoration: none;">'. $contact1.'</a>.</p>
 				<p>We look forward to providing you with an unforgettable experience!</p>
 				<p>Best regards,</p>
 				<p>The ' . esc_html($site_name) . ' Team<br>
-				<a href="[Your Website]" style="color: #0073aa; text-decoration: none;">[Your Website]</a><br>
-				<a href="tel:[Your Contact Number]" style="color: #0073aa; text-decoration: none;">[Your Contact Number]</a></p>
+				<a href="'. $website .'" style="color: #0073aa; text-decoration: none;">'.$website.'</a><br>
+				<a href="tel:'. $contact1 .'" style="color: #0073aa; text-decoration: none;">'. $website .'</a></p>
 			</div>';
 
 		$headers = [
@@ -543,8 +546,10 @@ class Cbtt_Forms_Public {
 		// End save to DB ----------------------------------
 
 		// for logo
-		$company_logo_url = plugins_url( 'assets/images/sample-logo.png', dirname( __FILE__ ) . '/../cbtt-forms.php' );
-		// error_log( 'Logo URL: ' . $company_logo_url );
+		$company_logo_url = plugins_url( 'assets/images/sample-logo.jpg', dirname( __FILE__ ) . '/../cbtt-forms.php' );
+		$contact1 = '+63 917 704 3508';
+		$contact2 = '+63 917 704 3508';
+		$website = 'https://cebuboholtraveltours.com';
 
 		// Build email body
 		$to = $email; // Change to your recipient
@@ -567,12 +572,12 @@ class Cbtt_Forms_Public {
 					<li><strong>Tour Notes/Requests:</strong> ' . (esc_html($special_requests) ? esc_html($special_requests) : 'None') . '</li>
 				</ul>
 				<p>We\'ll be sending a separate email with your <strong>official quotation</strong> and other important details/reminders shortly. Please keep an eye on your inbox.</p>
-				<p>In the meantime, if you have any questions or need to make changes to your booking, please don\'t hesitate to reply to this email or give us a call at <a href="tel:[Your Contact Number]" style="color: #0073aa; text-decoration: none;">[Your Contact Number]</a>.</p>
+				<p>In the meantime, if you have any questions or need to make changes to your booking, please don\'t hesitate to reply to this email or give us a call at <a href="tel:[Your Contact Number]" style="color: #0073aa; text-decoration: none;">'. $contact1 .'</a>.</p>
 				<p>We can\'t wait to see you!</p>
 				<p>Best regards,</p>
 				<p>The ' . esc_html($site_name) . ' Team<br>
-				<a href="[Your Website]" style="color: #0073aa; text-decoration: none;">[Your Website]</a><br>
-				<a href="tel:[Your Contact Number]" style="color: #0073aa; text-decoration: none;">[Your Contact Number]</a></p>
+				<a href="'. $website .'" style="color: #0073aa; text-decoration: none;">'. $website .'</a><br>
+				<a href="tel:'.$contact1.'" style="color: #0073aa; text-decoration: none;">'.$contact1.'</a></p>
 			</div>';
 		$headers = [
 			'Content-Type: text/html; charset=UTF-8',

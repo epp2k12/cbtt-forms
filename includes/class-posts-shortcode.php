@@ -30,7 +30,7 @@ class Posts_Shortcode {
         $atts = shortcode_atts(
             array(
                 'category'       => '',
-                'columns'        => 5, // Default to 5 posts per row
+                'columns'        => 6, // Default to 5 posts per row
                 'posts_per_page' => -1, // Show all posts by default
             ),
             $atts,
@@ -49,6 +49,7 @@ class Posts_Shortcode {
             'category_name'  => $category_slug,
             'posts_per_page' => $atts['posts_per_page'], // This tells WordPress to get ALL posts in the category.
             'post_status'    => 'publish',
+            'columns'        => $atts['columns'],
         );
 
         $posts = get_posts($args);
@@ -62,7 +63,7 @@ class Posts_Shortcode {
             echo '
             <style>
                 .category-posts-container {
-                    padding: 15px;
+                    padding: 5px;
                     margin-bottom: 20px;
                 }
                 .category-posts-list {
@@ -88,6 +89,7 @@ class Posts_Shortcode {
                 }
                 .category-posts-list li:hover {
                     transform: translateY(-2px); /* A subtle lift effect on hover */
+                    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
                 }
                 .post-thumbnail-shortcode {
                     width: 100%;
@@ -100,10 +102,11 @@ class Posts_Shortcode {
                     color: #91918e;
                     margin-top: 0;
                     margin-bottom: 10px;
-                    font-size: .7rem;
-                    line-height: 1;
-                    text-transform: uppercase;
+                    font-size: .8rem;
+                    line-height: 1.1;
+                    text-decoration: none !important;
                 }
+
                 /* New, more specific rule to remove the underline */
                 .category-posts-list li .book-now-button {
                     display: inline-block;
@@ -131,9 +134,17 @@ class Posts_Shortcode {
 
                 /* Responsive styles for mobile screens (up to 480px) */
                 @media (max-width: 480px) {
-                    .category-posts-list li {
-                        flex: 0 0 calc(100% - 15px); /* One column per row with full width, accounting for gap */
+
+                    .category-posts-container {
+                        padding: 5px;
                     }
+
+                    .category-posts-list li {
+                        // flex: 0 0 calc(50% - 7.5px); /* Two columns per row, accounting for 15px gap */
+                        flex: 0 0 calc(50% - 18px);
+                    }
+
+
                 }
             </style>';
 
@@ -144,19 +155,24 @@ class Posts_Shortcode {
             echo '<ul class="category-posts-list">';
             foreach ($posts as $post) {
                 setup_postdata($post);
+                $permalink = esc_url(get_permalink($post->ID));
+                    
 
                 echo '<li>';
                 if (has_post_thumbnail($post->ID)) {
                     $thumbnail_url = get_the_post_thumbnail_url($post->ID, 'thumbnail');
+                    echo '<a href="' . $permalink . '" class="post-thumbnail-link">';
                     echo '<img src="' . esc_url($thumbnail_url) . '" alt="' . esc_attr(get_the_title($post->ID)) . '" class="post-thumbnail-shortcode" />';
+                    echo '</a>';
                 }
                 
                 // Display the post title
                 echo '<h3>' . esc_html(get_the_title($post->ID)) . '</h3>';
 
                 // Display the new "Book now!" button
-                echo '<a href="' . esc_url(get_permalink($post->ID)) . '" class="book-now-button">Book Now!</a>';
+                echo '<a href="' . $permalink . '" class="book-now-button">Book Now!</a>';
                 echo '</li>';
+
             }
             echo '</ul>';
             echo '</div>';
