@@ -346,7 +346,7 @@ class Cbtt_Forms_Public {
 
 		$headers = [
 			'Content-Type: text/html; charset=UTF-8',
-			'From: ' . $site_name . ' <support@cbtt.com>'  // Use a proper domain
+			'From: ' . $site_name . ' <support@cebuboholtraveltours.com>'  // Use a proper domain
 		];
 		$client_mail_sent = wp_mail($to, $subject, $body, $headers);
 
@@ -382,7 +382,7 @@ class Cbtt_Forms_Public {
 		}
 
 		// --- Prepare Support Email ---
-		$support_to = 'support@mysite.com'; // Your support email address
+		$support_to = 'support@cebuboholtraveltours.com'; // Your support email address
 		$support_subject = 'New Tour Booking - ' . $name . ' - ' . $package_name;
 		$support_body = "New Tour Booking has been received with the following details:\n\n";
 		$support_body .= "**Client Information:**\n";
@@ -581,7 +581,7 @@ class Cbtt_Forms_Public {
 			</div>';
 		$headers = [
 			'Content-Type: text/html; charset=UTF-8',
-			'From: ' . $site_name . ' <support@cbtt.com>'  // Use a proper domain
+			'From: ' . $site_name . ' <support@cebuboholtraveltours.com>'  // Use a proper domain
 		];
 		$client_mail_sent = wp_mail($to, $subject, $body, $headers);
 
@@ -617,7 +617,7 @@ class Cbtt_Forms_Public {
 		}
 
 		// --- Prepare Support Email ---
-		$support_to = 'support@mysite.com'; // Your support email address
+		$support_to = 'support@cebuboholtraveltours.com'; // Your support email address
 		$support_subject = 'New Tour Booking - ' . $name . ' - ' . $package_name;
 		$support_body = "New Tour Booking has been received with the following details:\n\n";
 		$support_body .= "**Client Information:**\n";

@@ -30,7 +30,7 @@ class Posts_Shortcode {
         $atts = shortcode_atts(
             array(
                 'category'       => '',
-                'columns'        => 6, // Default to 5 posts per row
+                'columns'        => 5, // Default to 5 posts per row
                 'posts_per_page' => -1, // Show all posts by default
             ),
             $atts,
@@ -50,6 +50,8 @@ class Posts_Shortcode {
             'posts_per_page' => $atts['posts_per_page'], // This tells WordPress to get ALL posts in the category.
             'post_status'    => 'publish',
             'columns'        => $atts['columns'],
+            'orderby'        => 'date',
+            'order'          => 'ASC',
         );
 
         $posts = get_posts($args);
@@ -63,8 +65,12 @@ class Posts_Shortcode {
             echo '
             <style>
                 .category-posts-container {
-                    padding: 5px;
+                    padding: 0px;
                     margin-bottom: 20px;
+                    border: 1px solid #ededed;
+                    border-radius: 8px;
+                    margin-left: 3px;
+                    margin-right: 3px;
                 }
                 .category-posts-list {
                     display: flex;
@@ -72,7 +78,7 @@ class Posts_Shortcode {
                     list-style: none;
                     margin: 0;
                     padding: 0;
-                    gap: 15px; /* Spacing between grid items */
+                    gap: 10px; /* Spacing between grid items */
                     justify-content: flex-start; /* Align items to the left */
                 }
                 .category-posts-list li {
@@ -82,14 +88,14 @@ class Posts_Shortcode {
                     align-items: center;
                     text-align: center;
                     padding: 10px;
-                    border: 1px solid #ddd;
+                    border: 1px solid #ededed;
                     border-radius: 5px;
                     justify-content: space-between; /* To push the button to the bottom */
                     transition: all 0.3s ease; /* Add transition for a smooth hover effect */
                 }
                 .category-posts-list li:hover {
                     transform: translateY(-2px); /* A subtle lift effect on hover */
-                    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
+                    box-shadow: 0 5px 15px rgba(0, 136, 40, 0.4);
                 }
                 .post-thumbnail-shortcode {
                     width: 100%;
@@ -99,7 +105,7 @@ class Posts_Shortcode {
                     object-fit: cover;
                 }
                 .category-posts-list li h3 {
-                    color: #91918e;
+                    color: #008828;
                     margin-top: 0;
                     margin-bottom: 10px;
                     font-size: .8rem;
