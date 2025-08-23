@@ -311,9 +311,7 @@ const submitForm2 = async () => {
   }
 
 };
-
 </script>
-
 <style scoped>
 /* Add any additional styles as needed */
 td {
